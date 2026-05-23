@@ -2,12 +2,13 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 // Load environment variables
 import './loadEnvironment.js'
-import db from './db/conn.js'
+import getDb from './db/conn.js'
 import productRoute from './routes/product.js'
 import brandRoute from './routes/brand.js'
 
 const app = express()
 const PORT = (process.env.PORT as any as number) || 3000
+// const db = getDb()
 
 app.use(cors())
 app.use(express.json())
@@ -20,6 +21,7 @@ app.get('/test', (req: Request, res: Response) => {
 
 // Get a list of 50 posts
 app.get('/', async (req, res) => {
+  const db = await getDb()
   let collection = await db.collection('posts')
   let results = await collection.find({}).limit(50).toArray()
   res.send(results).status(200)

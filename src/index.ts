@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 // Load environment variables
-import './loadEnvironment'
+import './loadEnvironment.js'
 import db from './db/conn.js'
 import productRoute from './routes/product.js'
 import brandRoute from './routes/brand.js'

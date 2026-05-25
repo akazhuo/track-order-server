@@ -1,12 +1,14 @@
 import getDb from '@/db/conn.js'
-import type { Db, ObjectId } from 'mongodb'
+import type { Db, Collection, ObjectId } from 'mongodb'
 
 const db = await getDb()
 export abstract class BaseService {
   protected db: Db
+  protected collection: Collection
 
-  constructor() {
+  constructor(collectionName: string) {
     this.db = db
+    this.collection = db.collection(collectionName)
   }
 
   abstract getList(): unknown

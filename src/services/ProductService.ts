@@ -2,9 +2,11 @@ import { ObjectId } from 'mongodb'
 import { BaseService } from './BaseService'
 
 export default class ProductService extends BaseService {
+  constructor() {
+    super('products')
+  }
   async getList() {
-    const collection = await this.db.collection('products')
-    const results = await collection
+    const results = await this.collection
       .aggregate([
         // // 1. 先过滤出你想要搜索的商品名
         // {

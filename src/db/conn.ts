@@ -37,13 +37,31 @@ async function getDb() {
 
     // 缓存 db 实例
     _db = client.db(dbName)
-
-    // 在 product 集合的 brand_ids 字段上建立索引
-    await _db.collection('products').createIndex({ brand_ids: 1 })
+    await initIndexes()
     return _db
   } catch (error) {
     console.error('数据库连接失败:', error)
     throw error // 抛出错误，让调用方处理
+  }
+}
+
+// 封装一个安全的索引初始化函数
+async function initIndexes() {
+  try {
+    // 1. 在 product 集合的 brand_ids 字段上建立索引
+    await _db.collection('products').createIndex({ brand_ids: 1 })
+    // console.log('✅ 商品 brand_ids 索引检查/创建完毕')
+
+    // 2. 初始化品牌集合的唯一索引（假设是品牌名 name 唯一）
+    // 强烈建议给索引起个明确的名字（如 unique_name），避免自动生成导致冲突
+    await _db
+      .collection('brands')
+      .createIndex({ name: 1, product_id: 1 }, { unique: true, name: 'unique_product_id_name' })
+    // console.log('✅ 品牌 name 唯一索引检查/创建完毕')
+  } catch (error) {
+    if (error instanceof Error) {
+      console.warn('⚠️ 数据库索引初始化遇到小问题，但不影响主流程:', error.message)
+    }
   }
 }
 

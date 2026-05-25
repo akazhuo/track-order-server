@@ -3,6 +3,8 @@ import cors from 'cors'
 // Load environment variables
 import './loadEnvironment.js'
 import getDb from './db/conn.js'
+import { responseMiddleware } from './middlewares/response.js'
+import { errorHandler } from './middlewares/errorHandler.js'
 import productRoute from './routes/product.js'
 import brandRoute from './routes/brand.js'
 
@@ -11,6 +13,7 @@ const PORT = (process.env.PORT as any as number) || 3000
 
 app.use(cors())
 app.use(express.json())
+app.use(responseMiddleware)
 app.use('/product', productRoute)
 app.use('/brand', brandRoute)
 
@@ -25,6 +28,8 @@ app.get('/', async (req, res) => {
   let results = await collection.find({}).limit(50).toArray()
   res.send(results).status(200)
 })
+// 全部捕获错误中间件
+app.use(errorHandler)
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`)

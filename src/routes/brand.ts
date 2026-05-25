@@ -28,9 +28,11 @@ router.post('/add', async (req: Request, res: Response) => {
   try {
     const { product_id, name } = req.body
     await service.add({ product_id, name })
+
     res.success(null, '添加品牌成功')
-  } catch (err) {
-    res.fail(500, '添加品牌失败')
+  } catch (err: any) {
+    console.log(err)
+    res.fail(500, err.message)
   }
 })
 

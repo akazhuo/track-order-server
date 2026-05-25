@@ -8,7 +8,6 @@ import brandRoute from './routes/brand.js'
 
 const app = express()
 const PORT = (process.env.PORT as any as number) || 3000
-// const db = getDb()
 
 app.use(cors())
 app.use(express.json())

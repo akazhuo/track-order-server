@@ -2,7 +2,7 @@ import getDb from '@/db/conn.js'
 import type { ObjectId } from 'mongodb'
 import { BaseService } from './BaseService.js'
 
-class BrandService extends BaseService {
+export default class BrandService extends BaseService {
   async getList() {
     const collection = await this.db.collection('brands')
     const results = await collection.find({}).toArray()
@@ -15,5 +15,3 @@ class BrandService extends BaseService {
     return results
   }
 }
-
-export default BrandService

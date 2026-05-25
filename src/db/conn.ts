@@ -1,9 +1,9 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, type Db } from 'mongodb'
 const connectionString = process.env.DB_URL || ''
 // const client = new MongoClient(connectionString)
 const dbName = process.env.DB_NAME || ''
 
-let _db = null // 全局变量，用于缓存 db 实例（实现单例）
+let _db: Db // 全局变量，用于缓存 db 实例（实现单例）
 // let conn
 
 // try {

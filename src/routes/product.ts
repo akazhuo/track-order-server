@@ -6,10 +6,6 @@ const service = new ProductService()
 
 router.get('/', async (req: Request, res: Response) => {
   const results = await service.getList()
-  res.json({
-    success: true,
-    IsOK: true,
-    Extra: JSON.stringify(results)
-  })
+  res.success(results)
 })
 export default router

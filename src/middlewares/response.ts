@@ -1,4 +1,3 @@
-import { ApiResponse } from '@/types/response'
 import { Response, Request, NextFunction } from 'express'
 
 export const responseMiddleware = (req: Request, res: Response, next: NextFunction) => {

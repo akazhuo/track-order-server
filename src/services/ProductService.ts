@@ -24,5 +24,8 @@ export default class ProductService extends BaseService {
       .toArray()
     return results
   }
-  search(query: { [k: string]: any; _id?: ObjectId | undefined }) {}
+  search(query) {}
+  async add(data) {
+    throw new Error('Method not implemented.')
+  }
 }

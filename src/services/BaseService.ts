@@ -1,5 +1,5 @@
 import getDb from '@/db/conn.js'
-import type { Db, Collection, ObjectId } from 'mongodb'
+import type { Db, Collection, Filter, Document } from 'mongodb'
 
 const db = await getDb()
 export abstract class BaseService {
@@ -12,5 +12,6 @@ export abstract class BaseService {
   }
 
   abstract getList(): unknown
-  abstract search(query: { [k: string]: any; _id?: ObjectId | undefined }): unknown
+  abstract search(query: Filter<Document>): unknown
+  abstract add(data: Document): unknown
 }

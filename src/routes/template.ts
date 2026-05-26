@@ -17,15 +17,18 @@ router.get('/', async (req: Request, res: Response) => {
   res.success(results)
 })
 
-router.get('/add', cpUpload, async (req: Request, res: Response) => {
+router.post('/add', cpUpload, async (req: Request, res: Response) => {
   try {
     // 多字段上传时，文件信息在 req.files 对象中，键名就是字段名
     const files = req.files as { [fieldname: string]: Express.Multer.File[] }
     // 提取各个字段的文件路径
-    const banner = files['bannerImg'] ? `/uploads/${files['bannerImg'][0].filename}` : null
-    const brandLogo = files['brandImg'] ? `/uploads/${files['brandImg'][0].filename}` : null
+    const brandImg = files['brandImg'] ? `/uploads/${files['brandImg'][0].filename}` : null
     const video = files['video'] ? `/uploads/${files['video'][0].filename}` : null
 
+    // bannerImg 是多张，使用 map 提取路径数组
+    const banner = files['bannerImg']
+      ? files['bannerImg'].map((file) => `/uploads/${file.filename}`)
+      : []
     // descImg 是多张，使用 map 提取路径数组
     const descImgs = files['descImg']
       ? files['descImg'].map((file) => `/uploads/${file.filename}`)
@@ -33,7 +36,7 @@ router.get('/add', cpUpload, async (req: Request, res: Response) => {
 
     res.json({
       banner,
-      brandLogo,
+      brandImg,
       video,
       descImgs
     })

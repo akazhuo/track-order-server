@@ -7,6 +7,7 @@ import { responseMiddleware } from './middlewares/response.js'
 import { errorHandler } from './middlewares/errorHandler.js'
 import productRoute from './routes/product.js'
 import brandRoute from './routes/brand.js'
+import templateRoute from './routes/template.js'
 
 const app = express()
 const PORT = (process.env.PORT as any as number) || 3000
@@ -18,6 +19,7 @@ app.use(express.json())
 app.use(responseMiddleware)
 app.use('/product', productRoute)
 app.use('/brand', brandRoute)
+app.use('/template', templateRoute)
 
 app.get('/test', (req: Request, res: Response) => {
   res.json({ message: 'Hello from the Express TypeScript backend!' })

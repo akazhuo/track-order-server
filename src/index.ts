@@ -11,6 +11,8 @@ import brandRoute from './routes/brand.js'
 const app = express()
 const PORT = (process.env.PORT as any as number) || 3000
 
+// 让 /uploads 路径可以直接访问到项目根目录下的 uploads 文件夹
+app.use('/uploads', express.static('uploads'))
 app.use(cors())
 app.use(express.json())
 app.use(responseMiddleware)

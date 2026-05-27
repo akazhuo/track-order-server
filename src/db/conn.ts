@@ -49,13 +49,11 @@ async function getDb() {
 async function initIndexes() {
   try {
     // 在 product 集合的 brand_ids 字段上建立索引
-    await _db.collection('products').createIndex({ brand_ids: 1 })
+    // await _db.collection('products').createIndex({ brand_ids: 1 })
 
     // 初始化品牌集合的唯一索引（假设是品牌名 name 唯一）
     // 强烈建议给索引起个明确的名字（如 unique_name），避免自动生成导致冲突
-    await _db
-      .collection('brands')
-      .createIndex({ name: 1, product_id: 1 }, { unique: true, name: 'unique_product_id_name' })
+    await _db.collection('brands').createIndex({ name: 1 }, { unique: true, name: 'unique_name' })
 
     // template 创建商品 id 、品牌 id 唯一索引
     await _db

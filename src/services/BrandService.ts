@@ -13,24 +13,19 @@ export default class BrandService extends BaseService {
     const results = await this.collection.find(query).toArray()
     return results
   }
-  async add(data: { name: string; product_id: ObjectId }) {
+  async add(data: { name: string }) {
     try {
       if (!data.name) {
         throw new Error('缺少品牌名')
       }
-      if (!data.product_id) {
-        throw new Error('缺少目标商品')
-      }
-      const productObjectId = new ObjectId(data.product_id)
       const res = await this.collection.insertOne({
-        product_id: productObjectId,
         name: data.name
       })
-      const newBrandId = res.insertedId
-      await this.db.collection('products').updateOne(
-        { _id: productObjectId }, // 1. 筛选出要更新的目标产品
-        { $addToSet: { brand_ids: newBrandId } } // 2. 将新品牌ID推入 brand_ids 数组
-      )
+      // const newBrandId = res.insertedId
+      // await this.db.collection('products').updateOne(
+      //   { _id: productObjectId }, // 1. 筛选出要更新的目标产品
+      //   { $addToSet: { brand_ids: newBrandId } } // 2. 将新品牌ID推入 brand_ids 数组
+      // )
     } catch (error) {
       throw new Error('品牌已存在')
     }

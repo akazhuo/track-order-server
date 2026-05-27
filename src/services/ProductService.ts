@@ -1,5 +1,4 @@
-import { ObjectId } from 'mongodb'
-import { BaseService } from './BaseService'
+import { BaseService, type UpdateData } from './BaseService'
 
 export default class ProductService extends BaseService {
   constructor() {
@@ -26,6 +25,9 @@ export default class ProductService extends BaseService {
   }
   search(query) {}
   async add(data) {
+    throw new Error('Method not implemented.')
+  }
+  update(data: UpdateData): unknown {
     throw new Error('Method not implemented.')
   }
 }

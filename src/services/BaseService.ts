@@ -1,6 +1,9 @@
 import getDb from '@/db/conn.js'
 import type { Db, Collection, Filter, Document } from 'mongodb'
 
+export interface UpdateData extends Document {
+  id: string
+}
 const db = await getDb()
 export abstract class BaseService {
   protected db: Db
@@ -14,4 +17,5 @@ export abstract class BaseService {
   abstract getList(): unknown
   abstract search(query: Filter<Document>): unknown
   abstract add(data: Document): unknown
+  abstract update(data: UpdateData): unknown
 }

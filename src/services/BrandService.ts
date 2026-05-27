@@ -1,5 +1,5 @@
 import { Document, Filter, ObjectId } from 'mongodb'
-import { BaseService } from './BaseService.js'
+import { BaseService, UpdateData } from './BaseService.js'
 
 export default class BrandService extends BaseService {
   constructor() {
@@ -34,5 +34,8 @@ export default class BrandService extends BaseService {
     } catch (error) {
       throw new Error('品牌已存在')
     }
+  }
+  update(data: UpdateData): unknown {
+    throw new Error('Method not implemented.')
   }
 }

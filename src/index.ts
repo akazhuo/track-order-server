@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
+import bodyParser from 'body-parser'
 // Load environment variables
 import './loadEnvironment.js'
 import getDb from './db/conn.js'
@@ -16,6 +17,10 @@ const PORT = (process.env.PORT as any as number) || 3000
 app.use('/uploads', express.static('uploads'))
 app.use(cors())
 app.use(express.json())
+// parse application/json
+app.use(bodyParser.json())
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded())
 app.use(responseMiddleware)
 app.use('/product', productRoute)
 app.use('/brand', brandRoute)

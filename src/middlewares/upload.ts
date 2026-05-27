@@ -10,8 +10,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 // 限制单文件最大 50MB (考虑到视频)
 export const LIMIT_FILE_SIZE = 50 * 1024 * 1024
 
-// 确保 uploads 目录存在
-export const UPLOAD_DIR = path.resolve(__dirname, process.env.UPLOAD_DIR as string)
+// 获取环境变量，并设置一个默认的相对路径兜底
+const uploadDirEnv = process.env.UPLOAD_DIR || './uploads'
+// 用 path.resolve 确保拿到绝对路径
+export const UPLOAD_DIR = path.resolve(uploadDirEnv)
+// 创建目录，确保 uploads 目录存在
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true })
 }

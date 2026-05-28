@@ -35,7 +35,7 @@ router.get('/search', async (req: Request, res: Response) => {
   const results = await service.search(filerDoc)
   res.success(results)
 })
-
+// 模板上传资源
 router.post('/upload', uploadInstance.single('file'), async (req: Request, res: Response) => {
   try {
     const file = req.file as Express.Multer.File
@@ -131,7 +131,7 @@ router.post('/update', uploadMiddleware, async (req: Request, res: Response) => 
     '更新模板成功'
   )
 })
-
+// 部分更新
 router.patch('/update', async (req, res) => {
   // 提取各个字段
   const { id, brand_id, brand_img, banner_imgs, desc_imgs, video } = req.body
@@ -158,6 +158,15 @@ router.patch('/update', async (req, res) => {
     },
     '更新模板成功'
   )
+})
+// 模板删除文件资源
+router.delete('/delete', (req, res) => {
+  try {
+    service.delFile(req.body.filename)
+    res.success('', '删除文件成功')
+  } catch (err) {
+    res.fail(400, '删除文件失败')
+  }
 })
 
 export default router

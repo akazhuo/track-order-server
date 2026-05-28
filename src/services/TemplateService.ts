@@ -1,6 +1,8 @@
 import { Filter, Document, ObjectId } from 'mongodb'
 import fs from 'fs'
-import { BaseService } from './BaseService'
+import path from 'path'
+import { BaseService } from './BaseService.js'
+import { uploadDirEnv } from '@/middlewares/upload.js'
 
 export default class TemplateService extends BaseService {
   constructor() {
@@ -73,11 +75,17 @@ export default class TemplateService extends BaseService {
     }
   }
 
-  async delFile(filename) {
+  async delFile(filename: string) {
     try {
-      if (fs.existsSync(filename)) {
-        fs.unlinkSync(filename)
+      const filepath = path.resolve(uploadDirEnv + '/' + filename)
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+
+        return true
       }
-    } catch (err) {}
+      return true
+    } catch (err: any) {
+      throw new Error(err)
+    }
   }
 }

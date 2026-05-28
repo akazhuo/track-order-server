@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express'
-import fs from 'fs'
-import multer from 'multer'
+import path from 'path'
 import TemplateService from '@/services/TemplateService.js'
-import uploadInstance from '@/middlewares/upload.js'
+import uploadInstance, { uploadDirEnv } from '@/middlewares/upload.js'
 import { ObjectId } from 'mongodb'
+import fluentFFmpeg from 'fluent-ffmpeg'
 
 const router = express.Router()
 const service = new TemplateService()
@@ -39,6 +39,23 @@ router.get('/search', async (req: Request, res: Response) => {
 router.post('/upload', uploadInstance.single('file'), async (req: Request, res: Response) => {
   try {
     const file = req.file as Express.Multer.File
+    // 视频生成缩略图
+    if (file.mimetype.indexOf('video') > -1) {
+      const matches = file.filename.match(/.+(?=\.(mp4|avi|rmvb))/)
+      if (matches) {
+        const name = matches[0]
+        fluentFFmpeg(path.resolve(`${uploadDirEnv}/${file?.filename}`)).screenshots(
+          {
+            count: 1,
+            folder: uploadDirEnv,
+            filename: `${name}-thumbnail.png`
+          },
+          function (err) {
+            console.log('screenshots were saved')
+          }
+        )
+      }
+    }
     res.success(
       {
         filename: file?.filename

@@ -30,7 +30,9 @@ export default class TemplateService extends BaseService {
       })
 
       return result
-    } catch (err) {}
+    } catch (err: any) {
+      throw new Error(err)
+    }
   }
 
   async update(data: {
@@ -42,27 +44,6 @@ export default class TemplateService extends BaseService {
     desc_imgs: string[]
   }) {
     try {
-      const id = data.id
-      const oldResult = await this.search({ _id: new ObjectId(id) })
-
-      function delFile(file: string) {
-        if (fs.existsSync(file)) {
-          fs.unlinkSync(file)
-        }
-      }
-
-      if (oldResult) {
-        ;['banner_imgs', 'brand_img', 'desc_imgs', 'video'].forEach((key) => {
-          if (oldResult[key]) {
-            if (oldResult[key] instanceof Array) {
-              oldResult[key].forEach((item) => delFile(item))
-            } else {
-              delFile(oldResult[key])
-            }
-          }
-        })
-      }
-
       // 开启会话并执行事务
       const session = this.db.client.startSession()
 
@@ -80,8 +61,7 @@ export default class TemplateService extends BaseService {
               video: data.video,
               desc_imgs: data.desc_imgs
             }
-          },
-          { upsert: true }
+          }
         )
 
         return result
@@ -91,5 +71,13 @@ export default class TemplateService extends BaseService {
     } catch (err) {
       // 事务回滚
     }
+  }
+
+  async delFile(filename) {
+    try {
+      if (fs.existsSync(filename)) {
+        fs.unlinkSync(filename)
+      }
+    } catch (err) {}
   }
 }

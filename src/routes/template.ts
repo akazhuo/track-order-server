@@ -9,10 +9,11 @@ const router = express.Router()
 const service = new TemplateService()
 // 配置需要接收的字段及最大文件数
 const uploadMiddleware = uploadInstance.fields([
-  { name: 'banner_imgs', maxCount: 2 }, // Banner 图
-  { name: 'brand_img', maxCount: 1 }, // 单个品牌 Logo
-  { name: 'desc_imgs', maxCount: 6 }, // 最多 6 张详情图
-  { name: 'video', maxCount: 1 } // 单个视频
+  // { name: 'banner_imgs', maxCount: 2 }, // Banner 图
+  // { name: 'brand_img', maxCount: 1 }, // 单个品牌 Logo
+  // { name: 'desc_imgs', maxCount: 6 }, // 最多 6 张详情图
+  // { name: 'video', maxCount: 1 } // 单个视频
+  { name: 'file' }
 ])
 
 router.get('/', async (req: Request, res: Response) => {
@@ -35,23 +36,30 @@ router.get('/search', async (req: Request, res: Response) => {
   res.success(results)
 })
 
-router.post('/add', uploadMiddleware, async (req: Request, res: Response) => {
+router.post('/upload', uploadInstance.single('file'), async (req: Request, res: Response) => {
   try {
-    // 品牌 id
-    const brand_id: string = req.body.brand_id
-    // 多字段上传时，文件信息在 req.files 对象中，键名就是字段名
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] }
-    // 提取各个字段的文件路径
-    const brand_img = files['brand_img'] ? `/uploads/${files['brand_img'][0].filename}` : null
-    const video = files['video'] ? `/uploads/${files['video'][0].filename}` : null
-    // bannerImg 是多张，使用 map 提取路径数组
-    const banner_imgs = files['banner_imgs']
-      ? files['banner_imgs'].map((file) => `/uploads/${file.filename}`)
-      : []
-    // descImg 是多张，使用 map 提取路径数组
-    const desc_imgs = files['desc_imgs']
-      ? files['desc_imgs'].map((file) => `/uploads/${file.filename}`)
-      : []
+    const file = req.file as Express.Multer.File
+    res.success(
+      {
+        filename: file?.filename
+      },
+      '上传成功'
+    )
+
+    // const { product_id, brand_id, banner_imgs } = req.body
+    // const newTemId = await service.add({ product_id, brand_id })
+
+    // res.success(results)
+  } catch (error) {
+    console.trace(error)
+    return res.fail(400, '上传失败')
+  }
+})
+
+router.post('/add', async (req: Request, res: Response) => {
+  try {
+    // 提取各个字段
+    const { brand_id, brand_img, banner_imgs, desc_imgs, video } = req.body
 
     const insertedResult = await service.add({ brand_id, brand_img, banner_imgs, video, desc_imgs })
     if (!insertedResult) {
@@ -80,31 +88,51 @@ router.post('/add', uploadMiddleware, async (req: Request, res: Response) => {
 })
 
 router.post('/update', uploadMiddleware, async (req: Request, res: Response) => {
-  // 模板 id
-  const id = req.body.id
-  // 品牌 id
-  const brand_id: string = req.body.brand_id
-  // 多字段上传时，文件信息在 req.files 对象中，键名就是字段名
-  const files = req.files as { [fieldname: string]: Express.Multer.File[] }
-  // 提取各个字段的文件路径
-  const brand_img = files['banner_imgs'] ? `/uploads/${files['brand_img'][0].filename}` : null
-  const video = files['video'] ? `/uploads/${files['video'][0].filename}` : null
-  // bannerImg 是多张，使用 map 提取路径数组
-  const banner_imgs = files['banner_imgs']
-    ? files['banner_imgs'].map((file) => `/uploads/${file.filename}`)
-    : []
-  // descImg 是多张，使用 map 提取路径数组
-  const desc_imgs = files['desc_imgs']
-    ? files['desc_imgs'].map((file) => `/uploads/${file.filename}`)
-    : []
+  // 提取各个字段
+  const { id, brand_id, brand_img, banner_imgs, desc_imgs, video } = req.body
 
-  const result = await service.update({ id, brand_id, brand_img, banner_imgs, video, desc_imgs })
-  if (!result) {
+  const updatedResult = await service.update({
+    id,
+    brand_id,
+    brand_img,
+    banner_imgs,
+    video,
+    desc_imgs
+  })
+  if (!updatedResult) {
     res.fail(400, '更新模板失败')
   }
   res.success(
     {
-      id: result?.upsertedId,
+      id: updatedResult?.upsertedId,
+      brand_id,
+      brand_img,
+      banner_imgs,
+      video,
+      desc_imgs
+    },
+    '更新模板成功'
+  )
+})
+
+router.patch('/update', async (req, res) => {
+  // 提取各个字段
+  const { id, brand_id, brand_img, banner_imgs, desc_imgs, video } = req.body
+
+  const updatedResult = await service.update({
+    id,
+    brand_id,
+    brand_img,
+    banner_imgs,
+    video,
+    desc_imgs
+  })
+  if (!updatedResult) {
+    res.fail(400, '更新模板失败')
+  }
+  res.success(
+    {
+      id: updatedResult?.upsertedId,
       brand_id,
       brand_img,
       banner_imgs,

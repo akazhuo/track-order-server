@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express'
 import path from 'path'
 import TemplateService from '@/services/TemplateService.js'
-import uploadInstance, { uploadDirEnv } from '@/middlewares/upload.js'
+import uploadInstance, { uploadDirEnv } from '@/utils/upload.js'
 import { ObjectId } from 'mongodb'
 import fluentFFmpeg from 'fluent-ffmpeg'
 
@@ -44,16 +44,11 @@ router.post('/upload', uploadInstance.single('file'), async (req: Request, res: 
       const matches = file.filename.match(/.+(?=\.(mp4|avi|rmvb))/)
       if (matches) {
         const name = matches[0]
-        fluentFFmpeg(path.resolve(`${uploadDirEnv}/${file?.filename}`)).screenshots(
-          {
-            count: 1,
-            folder: uploadDirEnv,
-            filename: `${name}-thumbnail.png`
-          },
-          function (err) {
-            console.log('screenshots were saved')
-          }
-        )
+        fluentFFmpeg(path.resolve(`${uploadDirEnv}/${file?.filename}`)).thumbnail({
+          count: 1,
+          folder: uploadDirEnv,
+          filename: `${name}-thumbnail.png`
+        })
       }
     }
     res.success(

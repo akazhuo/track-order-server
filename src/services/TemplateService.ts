@@ -2,7 +2,7 @@ import { Filter, Document, ObjectId } from 'mongodb'
 import fs from 'fs'
 import path from 'path'
 import { BaseService } from './BaseService.js'
-import { uploadDirEnv } from '@/middlewares/upload.js'
+import { uploadDirEnv } from '@/utils/upload.js'
 
 export default class TemplateService extends BaseService {
   constructor() {
